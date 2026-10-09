@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><style>
+body{font-family:Arial,sans-serif;background:#fff;color:#111;margin:26px;max-width:980px}
+h1{font-size:23px;margin:0 0 6px}p{margin:0 0 18px;font-size:15px}
+pre{font-family:Consolas,monospace;font-size:15px;line-height:1.45;
+background:#f6f6f6;border:1px solid #bbb;padding:18px;white-space:pre-wrap;margin:9px 0 20px}
+.row{margin-bottom:18px}.url{font-family:Consolas,monospace;font-size:14px}
+.status{font-weight:bold}
+</style><body><h1>Evidencia: endpoint protegido con JWT</h1><p>La vista llama a la capa de servicios.</p><div class="url">products/views.py</div><pre>  1  from rest_framework import viewsets
+  2  from rest_framework.decorators import api_view, permission_classes
+  3  from rest_framework.permissions import IsAuthenticated
+  4  from rest_framework.response import Response
+  5  from django_filters.rest_framework import DjangoFilterBackend
+  6  from .models import Category, Product
+  7  from .serializers import CategorySerializer, ProductSerializer
+  8  from .services import obtener_precio_final
+  9  
+ 10  
+ 11  class ProductViewSet(viewsets.ModelViewSet):
+ 12      queryset = Product.objects.select_related(&#x27;category&#x27;).all()
+ 13      serializer_class = ProductSerializer
+ 14      filter_backends = [DjangoFilterBackend]
+ 15      filterset_fields = [&#x27;category&#x27;]
+ 16      permission_classes = [IsAuthenticated]
+ 17  
+ 18  
+ 19  class CategoryViewSet(viewsets.ModelViewSet):
+ 20      queryset = Category.objects.all()
+ 21      serializer_class = CategorySerializer
+ 22      permission_classes = [IsAuthenticated]
+ 23  
+ 24  
+ 25  @api_view([&#x27;GET&#x27;])
+ 26  @permission_classes([IsAuthenticated])
+ 27  def precio_final(request, pk):
+ 28      return Response(obtener_precio_final(pk))</pre></body></html>

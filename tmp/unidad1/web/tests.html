@@ -1,0 +1,25 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><style>
+body{font-family:Arial,sans-serif;background:#fff;color:#111;margin:26px;max-width:980px}
+h1{font-size:23px;margin:0 0 6px}p{margin:0 0 18px;font-size:15px}
+pre{font-family:Consolas,monospace;font-size:15px;line-height:1.45;
+background:#f6f6f6;border:1px solid #bbb;padding:18px;white-space:pre-wrap;margin:9px 0 20px}
+.row{margin-bottom:18px}.url{font-family:Consolas,monospace;font-size:14px}
+.status{font-weight:bold}
+</style><body><h1>Evidencia: dos pruebas del endpoint</h1><p>Fragmento del archivo real del proyecto.</p><div class="url">products/tests.py</div><pre>110      def test_precio_final_con_token_para_dos_categorias(self):
+111          productos = [
+112              (self.mouse.pk, &#x27;Electrónica&#x27;, Decimal(&#x27;225.00&#x27;)),
+113              (Product.objects.get(name=&#x27;Playera&#x27;).pk, &#x27;Ropa&#x27;, Decimal(&#x27;144.00&#x27;)),
+114          ]
+115          for pk, categoria, total in productos:
+116              with self.subTest(categoria=categoria):
+117                  response = self.client.get(f&#x27;/api/products/{pk}/precio-final/&#x27;)
+118                  self.assertEqual(response.status_code, 200)
+119                  self.assertEqual(response.data[&#x27;categoria&#x27;], categoria)
+120                  self.assertEqual(Decimal(response.data[&#x27;precio_final&#x27;]), total)
+121  
+122      def test_precio_final_sin_token_devuelve_401(self):
+123          cliente_sin_token = APIClient()
+124          response = cliente_sin_token.get(
+125              f&#x27;/api/products/{self.mouse.pk}/precio-final/&#x27;
+126          )
+127          self.assertEqual(response.status_code, 401)</pre></body></html>
