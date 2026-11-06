@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,10 +44,12 @@ THIRD_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_spectacular',
 ]
 
 OWN_APPS = [
     'products',
+    'users',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS 
@@ -55,7 +58,21 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'APPDEWEBINTEGRALCONNOMBRECAMBIADO',
+    'DESCRIPTION': 'API de la tienda online: productos, categorías y usuarios.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+}
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,7 +89,7 @@ ROOT_URLCONF = 'tienda_online.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,11 +110,7 @@ WSGI_APPLICATION = 'tienda_online.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'django_api',
-        'USERS': 'root',
-        'PASSWORD': '2712',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

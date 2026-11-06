@@ -1,0 +1,17 @@
+{% extends "admin/login.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .login #branding h1 {
+    font-size: 14px;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .login #header {
+    height: auto;
+    min-height: 48px;
+  }
+</style>
+{% endblock %}

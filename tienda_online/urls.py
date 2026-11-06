@@ -16,12 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include 
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.views.generic import RedirectView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from rest_framework_simplejwt.views import TokenRefreshView
+from users.views import EmailOrUsernameTokenObtainPairView
+
+admin.site.site_header = 'APPDEWEBINTEGRALCONNOMBRECAMBIADO'
+admin.site.site_title = 'APPDEWEBINTEGRALCONNOMBRECAMBIADO'
+admin.site.index_title = 'Administración de la tienda online'
 
 urlpatterns = [
+    path('', RedirectView.as_view(pattern_name='swagger-ui', permanent=False)),
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('swagger/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('api/token/', EmailOrUsernameTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('products.urls')),
     path('api/v1/', include('products.urls')),
+    path('api/v1/', include('users.urls')),
 ]
