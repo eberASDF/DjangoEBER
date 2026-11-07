@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1%j%2eiklcwu%(9)xk0^wq(y&w^7tk)mt+*r)9g8b98ul_=)5s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -50,6 +50,7 @@ THIRD_APPS = [
 OWN_APPS = [
     'products',
     'users',
+    'integrations',
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS 
@@ -63,7 +64,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'APPDEWEBINTEGRALCONNOMBRECAMBIADO',
-    'DESCRIPTION': 'API de la tienda online: productos, categorías y usuarios.',
+    'DESCRIPTION': 'API de productos, usuarios, autenticación y servicios externos.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

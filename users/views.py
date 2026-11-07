@@ -1,11 +1,12 @@
 from rest_framework import generics, viewsets
 from rest_framework import serializers
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import User
-from .serializers import UserSerializer
+from .serializers import RegisterUserSerializer, UserSerializer
 
 
 class UserApiViewSet(viewsets.ModelViewSet):
@@ -20,6 +21,12 @@ class UserView(generics.GenericAPIView):
 
     def get(self, request):
         return Response(self.get_serializer(request.user).data)
+
+
+class RegisterUserView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterUserSerializer
+    queryset = User.objects.none()
 
 
 class EmailOrUsernameTokenObtainPairSerializer(TokenObtainPairSerializer):

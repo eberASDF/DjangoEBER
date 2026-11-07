@@ -6,6 +6,34 @@ from django.conf import settings
 from rest_framework.test import APIClient
 
 
+class PublicRegistrationTests(TestCase):
+    def test_registration_creates_login_account_without_exposing_password(self):
+        client = APIClient()
+        result = client.post('/api/v1/auth/register/', {
+            'username': 'nuevo', 'email': 'nuevo@example.com',
+            'first_name': 'Nara', 'telefono': '5551234567',
+            'password': 'ClaveSegura123!', 'password_confirm': 'ClaveSegura123!',
+        }, format='json')
+        self.assertEqual(result.status_code, 201)
+        self.assertNotIn('password', result.data)
+        self.assertNotIn('password_confirm', result.data)
+        user = get_user_model().objects.get(email='nuevo@example.com')
+        self.assertTrue(user.check_password('ClaveSegura123!'))
+        self.assertFalse(user.is_staff)
+        login = client.post('/api/v1/auth/token/', {
+            'email': 'nuevo@example.com', 'password': 'ClaveSegura123!',
+        }, format='json')
+        self.assertEqual(login.status_code, 200)
+
+    def test_registration_rejects_mismatched_passwords(self):
+        result = APIClient().post('/api/v1/auth/register/', {
+            'username': 'nuevo', 'email': 'nuevo@example.com',
+            'password': 'ClaveSegura123!', 'password_confirm': 'OtraClave123!',
+        }, format='json')
+        self.assertEqual(result.status_code, 400)
+        self.assertFalse(get_user_model().objects.filter(email='nuevo@example.com').exists())
+
+
 class UserApiTests(TestCase):
     def setUp(self):
         self.admin = get_user_model().objects.create_superuser(
